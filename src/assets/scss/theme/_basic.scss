@@ -1,0 +1,22 @@
+body {
+  font-family: $font-ubuntu-regular;
+}
+
+input {
+  outline: none;
+}
+
+::-webkit-scrollbar {
+  background-color: #404040;
+  border-radius: 4px;
+  width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #737373;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #a3a3a3;
+}
