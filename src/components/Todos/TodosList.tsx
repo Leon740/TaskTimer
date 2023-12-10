@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable react/require-default-props */
 import React, { useContext } from 'react';
 import PrioritiesArrContext from '../context/PrioritiesArrContext';
