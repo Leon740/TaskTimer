@@ -13,6 +13,7 @@ function Loader({ children }: LoaderPropsI): React.JSX.Element {
         setIsMountedBoolSt(true);
       }, 500);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return !isMountedBoolSt ? (
