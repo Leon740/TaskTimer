@@ -1,99 +1,103 @@
 import React, { useState, useRef, useContext, ChangeEvent } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { icon } from '@fortawesome/fontawesome-svg-core/import.macro';
-import PrioritiesArrContext from '../context/PrioritiesArrContext';
+import PrioritiesContext from '../context/PrioritiesContext';
 
 interface NewTodoPropsI {
   // eslint-disable-next-line no-unused-vars
-  addTodoFn: (priorityNum: number, labelStr: string) => void;
+  addTodoFn: (priorityNumber: number, label: string) => void;
 }
 
 function NewTodo({ addTodoFn }: NewTodoPropsI): React.JSX.Element {
-  const inputRfObj = useRef<HTMLInputElement>(null);
-  const [inputValueStrSt, setInputValueStrSt] = useState<string>('');
+  const prioritiesSelectRef = useRef<HTMLUListElement>(null);
+
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [inputValueSt, setInputValueSt] = useState<string>('');
 
   function inputOnChangeFn(event: ChangeEvent<HTMLInputElement>) {
-    setInputValueStrSt(event.target.value);
+    setInputValueSt(event.target.value);
   }
 
-  const prioritiesArr = useContext(PrioritiesArrContext);
+  function inputOnFocusFn() {
+    inputRef.current!.focus();
+    prioritiesSelectRef.current!.className = prioritiesSelectRef.current!.className.replace(
+      'h-0',
+      'h-[120px]'
+    );
+  }
+  function inputOnBlurFn() {
+    prioritiesSelectRef.current!.className = prioritiesSelectRef.current!.className.replace(
+      'h-[120px]',
+      'h-0'
+    );
+  }
 
-  const [priorityLabelStrSt, setPriorityLabelStrSt] = useState<string>(
-    prioritiesArr[prioritiesArr.length - 1].label
+  const PRIORITIES = useContext(PrioritiesContext);
+
+  const [priorityNumberSt, setPriorityNumberSt] = useState<number>(
+    PRIORITIES[PRIORITIES.length - 1].number
   );
-  const activePriorityObj = prioritiesArr.find(
-    (priorityObj) => priorityObj.label === priorityLabelStrSt
-  );
+  const activePriority = PRIORITIES.find((priority) => priority.number === priorityNumberSt);
 
   function handleAddTodoFn() {
-    addTodoFn(activePriorityObj!.number, inputValueStrSt);
-    setInputValueStrSt('');
-    inputRfObj.current?.focus();
+    addTodoFn(priorityNumberSt, inputValueSt);
+    setInputValueSt('');
+    inputOnFocusFn();
   }
 
   return (
-    <div className="w-full sticky bottom-0 z-50 bg-neutral-900 mt-xxl flex items-center before:content=[''] before:h-1 before:absolute before:top-0 before:-left-lg before:-right-lg before:bg-white">
+    <div className="w-full sticky bottom-0 z-50 bg-neutral-900 mt-xxl flex items-center before:content=[''] before:h-1 before:absolute before:top-0 before:-left-lg before:-right-lg before:bg-white sm:before:left-0 sm:before:right-0">
       <button
         type="button"
-        onFocus={() => inputRfObj.current?.focus()}
-        className="text-md leading-6 mr-sm"
+        onFocus={inputOnFocusFn}
+        className={`text-md leading-6 mr-sm transition-all ${activePriority!.color}`}
       >
         <FontAwesomeIcon icon={icon({ name: 'circle-plus' })} />
       </button>
 
-      <div className="relative w-full flex items-center">
-        <span
-          className={`text-md absolute left-0 top-1/2 -translate-y-1/2 ${
-            inputValueStrSt ? 'opacity-0' : ''
-          }`}
-        >
-          New Todo
-        </span>
+      {/* delay-300 = workaround of prioritiesSelectOnChange */}
+      <ul
+        ref={prioritiesSelectRef}
+        className="absolute z-10 left-xxs top-lg flex flex-col gap-xs transition-all delay-300 -translate-y-full overflow-hidden h-0"
+      >
+        {PRIORITIES.map(({ id, number, label, background, border }) => (
+          <li key={id}>
+            <button
+              type="button"
+              value={number}
+              aria-label={label}
+              onClick={() => {
+                setPriorityNumberSt(number);
+                inputOnFocusFn();
+              }}
+              className={`w-sm h-sm rounded-full ${background} ${border}`}
+            />
+          </li>
+        ))}
+      </ul>
 
+      <div className="relative w-full flex items-center">
         <input
           type="text"
-          className="relative z-10 bg-transparent w-full py-lg text-md"
-          ref={inputRfObj}
-          value={inputValueStrSt}
+          ref={inputRef}
+          value={inputValueSt}
           onChange={inputOnChangeFn}
+          onFocus={inputOnFocusFn}
+          onBlur={inputOnBlurFn}
+          className="relative z-10 bg-transparent w-full py-lg text-md"
         />
 
-        {inputValueStrSt && (
-          <>
-            <div className="relative">
-              <select
-                className={`appearance-none relative z-10 bg-transparent border-1 py-xxs pl-xs pr-lg ${
-                  activePriorityObj!.color
-                } ${activePriorityObj!.border}`}
-                value={priorityLabelStrSt}
-                onChange={(event) => setPriorityLabelStrSt(event.target.value)}
-              >
-                {prioritiesArr.map(({ id, label }) => (
-                  <option key={id} value={label}>
-                    {label}
-                  </option>
-                ))}
-              </select>
-              <span
-                className={`absolute z-0 top-1/2 -translate-y-1/2 right-xs text-sm ${
-                  activePriorityObj!.color
-                }`}
-              >
-                <FontAwesomeIcon icon={icon({ name: 'chevron-down' })} />
-              </span>
-            </div>
-
-            {priorityLabelStrSt && (
-              <button
-                type="button"
-                className="text-green-500 text-md ml-sm"
-                aria-label="add Todo"
-                onClick={handleAddTodoFn}
-              >
-                <FontAwesomeIcon icon={icon({ name: 'check' })} />
-              </button>
-            )}
-          </>
+        {inputValueSt ? (
+          <button
+            type="button"
+            className="text-green-500 text-md ml-sm"
+            aria-label="add Todo"
+            onClick={handleAddTodoFn}
+          >
+            <FontAwesomeIcon icon={icon({ name: 'check' })} />
+          </button>
+        ) : (
+          <span className="text-md absolute left-0 top-1/2 -translate-y-1/2">New Todo</span>
         )}
       </div>
     </div>
