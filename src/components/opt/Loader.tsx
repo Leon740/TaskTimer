@@ -5,18 +5,18 @@ interface LoaderPropsI {
 }
 
 function Loader({ children }: LoaderPropsI): React.JSX.Element {
-  const [isMountedBoolSt, setIsMountedBoolSt] = useState<boolean>(false);
+  const [isMountedSt, setIsMountedSt] = useState<boolean>(false);
 
   useEffect(() => {
-    if (!isMountedBoolSt) {
+    if (!isMountedSt) {
       setTimeout(() => {
-        setIsMountedBoolSt(true);
+        setIsMountedSt(true);
       }, 500);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return !isMountedBoolSt ? (
+  return !isMountedSt ? (
     <div className="w-full min-h-full flex flex-col items-center justify-center">
       <div className="w-lg h-lg text-white">
         <svg

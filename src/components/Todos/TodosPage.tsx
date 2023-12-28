@@ -2,12 +2,12 @@ import React, { useContext } from 'react';
 import TodosList from './TodosList';
 import BackBtn from '../common/BackBtn';
 import NewTodo from './NewTodo';
-import PrioritiesArrContext from '../context/PrioritiesArrContext';
-import { todoObjI } from '../../types/types';
+import PrioritiesContext from '../context/PrioritiesContext';
+import { todoI } from '../../types/types';
 
 interface TodosPagePropsI {
   backBtnOnClickFn: () => void;
-  todosArr: todoObjI[];
+  todos: todoI[];
   // eslint-disable-next-line no-unused-vars
   toggleTodoFn: (idNum: number) => void;
   // eslint-disable-next-line no-unused-vars
@@ -16,11 +16,11 @@ interface TodosPagePropsI {
 
 function TodosPage({
   backBtnOnClickFn,
-  todosArr,
+  todos,
   toggleTodoFn,
   addTodoFn
 }: TodosPagePropsI): React.JSX.Element {
-  const prioritiesArr = useContext(PrioritiesArrContext);
+  const PRIORITIES = useContext(PrioritiesContext);
 
   return (
     <>
@@ -28,35 +28,26 @@ function TodosPage({
         <BackBtn onClickFn={backBtnOnClickFn} />
 
         <ul>
-          {prioritiesArr.map(
-            ({
-              id: idNum,
-              number: priorityNum,
-              label: labelStr,
-              color: colorStr,
-              border: borderStr
-            }) => {
-              const todosArrByPriority = todosArr?.filter(
-                (todoObj) => todoObj.priority === priorityNum
-              );
+          {PRIORITIES.map(({ id, number, label, color, border }) => {
+            const todosByPriority = todos?.filter(
+              (todo) => !todo.completed && todo.priority === number
+            );
 
-              return (
-                <li key={idNum}>
-                  <section className={`p-xs mb-1 border-1 ${borderStr}`}>
-                    <h4 className={`text-sm ${colorStr}`}>{labelStr}</h4>
-                  </section>
-                  {todosArrByPriority.length > 0 && (
-                    <TodosList
-                      classNameStr="py-lg px-xs"
-                      sizeStr="sm"
-                      todosArr={todosArrByPriority}
-                      toggleTodoFn={toggleTodoFn}
-                    />
-                  )}
-                </li>
-              );
-            }
-          )}
+            return (
+              <li key={id}>
+                <section className={`p-xs mb-1 border-1 ${border}`}>
+                  <h4 className={`text-sm ${color}`}>{label}</h4>
+                </section>
+                {todosByPriority.length > 0 && (
+                  <TodosList
+                    className="py-lg px-xs"
+                    todos={todosByPriority}
+                    toggleTodoFn={toggleTodoFn}
+                  />
+                )}
+              </li>
+            );
+          })}
         </ul>
       </div>
 

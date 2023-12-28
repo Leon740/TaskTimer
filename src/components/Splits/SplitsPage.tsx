@@ -2,20 +2,20 @@ import React from 'react';
 import TodosList from '../Todos/TodosList';
 import BackBtn from '../common/BackBtn';
 import BlankTitle from './BlankTitle';
-import { splitObjI } from '../../types/types';
+import { splitI } from '../../types/types';
 
-function getFormattedDateFn(dateStr: number) {
-  const dateDt = new Date(dateStr);
-  const dateFormatOptionsObj = {
+function getFormattedDateFn(dateArg: number) {
+  const date = new Date(dateArg);
+  const dateFormatOptions = {
     hour: 'numeric' as const,
     minute: 'numeric' as const
   };
-  return new Intl.DateTimeFormat('en-US', dateFormatOptionsObj).format(dateDt);
+  return new Intl.DateTimeFormat('en-US', dateFormatOptions).format(date);
 }
 
-function getTimeStrFn(timeMsNum: number) {
-  const minutesNum = Math.floor(timeMsNum / 60000) % 60;
-  const hoursNum = Math.floor(timeMsNum / 3600000) % 24;
+function getTimeFn(ms: number) {
+  const minutesNum = Math.floor(ms / 60000) % 60;
+  const hoursNum = Math.floor(ms / 3600000) % 24;
   const hoursStr = hoursNum > 0 ? `${hoursNum} h` : '';
   const minutesStr = minutesNum > 0 ? `${minutesNum} min` : '';
 
@@ -24,10 +24,10 @@ function getTimeStrFn(timeMsNum: number) {
 
 interface SplitsPagePropsI {
   backBtnOnClickFn: () => void;
-  splitsArr: splitObjI[];
+  splits: splitI[];
 }
 
-function SplitsPage({ backBtnOnClickFn, splitsArr }: SplitsPagePropsI): React.JSX.Element {
+function SplitsPage({ backBtnOnClickFn, splits }: SplitsPagePropsI): React.JSX.Element {
   let totalTimeNum = 0;
 
   return (
@@ -35,27 +35,24 @@ function SplitsPage({ backBtnOnClickFn, splitsArr }: SplitsPagePropsI): React.JS
       <div className="w-full h-full flex flex-col items-start">
         <BackBtn onClickFn={backBtnOnClickFn} />
 
-        {splitsArr?.length > 0 ? (
-          <ul className="flex flex-col gap-xxl">
-            {splitsArr.map(({ id: idNum, start: startStr, finish: finishStr, todos: todosArr }) => {
+        {splits?.length > 0 ? (
+          <ul className="w-full flex flex-col gap-xxl">
+            {splits.map(({ id, start: startStr, finish: finishStr, todos }) => {
               const startNum = new Date(startStr).getTime();
               const finishNum = new Date(finishStr!).getTime();
               const timeDifferenceNum = finishNum - startNum;
               totalTimeNum += timeDifferenceNum;
 
               return (
-                <li key={idNum}>
+                <li key={id}>
                   <section className="flex items-baseline justify-between sm:justify-start mb-lg">
-                    <h3 className="text-md">
+                    <h3 className="text-md lowercase">
                       {getFormattedDateFn(startNum)} - {getFormattedDateFn(finishNum)}
                     </h3>
-                    <span className="text-sm ml-lg">{getTimeStrFn(timeDifferenceNum)}</span>
+                    <span className="text-sm ml-lg">{getTimeFn(timeDifferenceNum)}</span>
                   </section>
-                  {todosArr.length > 0 ? (
-                    <TodosList
-                      sizeStr="xl"
-                      todosArr={todosArr.sort((a, b) => a.priority - b.priority)}
-                    />
+                  {todos.length > 0 ? (
+                    <TodosList todos={todos.sort((a, b) => a.priority - b.priority)} />
                   ) : (
                     <h4 className="text-sm text-red-500">No Todos completed.</h4>
                   )}
@@ -68,9 +65,7 @@ function SplitsPage({ backBtnOnClickFn, splitsArr }: SplitsPagePropsI): React.JS
         )}
       </div>
 
-      {splitsArr.length > 0 && (
-        <p className="text-md mt-xxl">Total: {getTimeStrFn(totalTimeNum)}</p>
-      )}
+      {splits.length > 0 && <p className="text-md mt-xxl">Total: {getTimeFn(totalTimeNum)}</p>}
     </>
   );
 }

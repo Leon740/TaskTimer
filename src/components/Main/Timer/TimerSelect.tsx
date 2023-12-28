@@ -3,16 +3,16 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { icon } from '@fortawesome/fontawesome-svg-core/import.macro';
 
 interface TimerSelectPropsI {
-  valueNum: number;
+  value: number;
   onChangeFn: Dispatch<SetStateAction<number>>;
 }
 
-function TimerSelect({ valueNum, onChangeFn }: TimerSelectPropsI): React.JSX.Element {
+function TimerSelect({ value, onChangeFn }: TimerSelectPropsI): React.JSX.Element {
   return (
     <div className="relative">
       <select
         className="appearance-none relative z-10 bg-transparent border-1 border-white py-xxs pl-xs pr-lg"
-        value={valueNum}
+        value={value}
         onChange={(event) => onChangeFn(Number(event.target.value))}
       >
         {[30, 45, 60].map((num) => (

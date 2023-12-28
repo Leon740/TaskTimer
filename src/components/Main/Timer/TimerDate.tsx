@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 
 function TimerDate(): React.JSX.Element {
-  const [dateObjSt, setDateObjSt] = useState<Date>(new Date());
+  const [dateSt, setDateSt] = useState<Date>(new Date());
 
-  const dateFormatOptionsObj = {
+  const dateFormatOptions = {
     weekday: 'short' as const,
     month: 'short' as const,
     day: 'numeric' as const,
@@ -11,18 +11,16 @@ function TimerDate(): React.JSX.Element {
     minute: 'numeric' as const
   };
 
-  const formattedDateStr: string = new Intl.DateTimeFormat('en-US', dateFormatOptionsObj).format(
-    dateObjSt
-  );
+  const formattedDate: string = new Intl.DateTimeFormat('en-US', dateFormatOptions).format(dateSt);
 
   useEffect(() => {
-    const intervalIdNum: ReturnType<typeof setInterval> = setInterval(() => {
-      setDateObjSt(new Date());
+    const intervalId: ReturnType<typeof setInterval> = setInterval(() => {
+      setDateSt(new Date());
     }, 60000);
 
-    return () => clearInterval(intervalIdNum);
+    return () => clearInterval(intervalId);
   }, []);
 
-  return <p className="text-sm text-gray-500">{formattedDateStr}</p>;
+  return <p className="text-sm text-gray-500">{formattedDate}</p>;
 }
 export default TimerDate;

@@ -3,74 +3,70 @@ import TimerDisplay from './TimerDisplay';
 import TimerControls from './TimerControls';
 
 interface TimerPropsI {
-  handleOnResetFn: () => void;
-  handleOnPauseFn: () => void;
   handleOnStartFn: () => void;
+  handleOnPauseFn: () => void;
   handleOnFinishFn: () => void;
+  handleOnResetFn: () => void;
 }
 
-interface TimeObjI {
+interface TimeI {
   hours: number;
   minutes: number;
   seconds: number;
 }
 
 function Timer({
-  handleOnResetFn,
-  handleOnPauseFn,
   handleOnStartFn,
-  handleOnFinishFn
+  handleOnPauseFn,
+  handleOnFinishFn,
+  handleOnResetFn
 }: TimerPropsI): React.JSX.Element {
-  const initialTimeObj: TimeObjI = { hours: 0, minutes: 0, seconds: 0 };
-  const [timeObjSt, setTimeObjSt] = useState<TimeObjI>(initialTimeObj);
+  const initialTime: TimeI = { hours: 0, minutes: 0, seconds: 0 };
+  const [timeSt, setTimeSt] = useState<TimeI>(initialTime);
 
-  const [isActiveBoolSt, setIsActiveBoolSt] = useState<boolean>(false);
+  const [isActiveSt, setIsActiveSt] = useState<boolean>(false);
 
   useEffect(() => {
-    let intervalIdNum: ReturnType<typeof setInterval>;
+    let intervalId: ReturnType<typeof setInterval>;
 
-    if (isActiveBoolSt) {
-      intervalIdNum = setInterval(() => {
-        setTimeObjSt(({ hours, minutes, seconds }) => {
-          const newSecondsNum = seconds + 1;
-          const newMinutesNum = minutes + Math.floor(newSecondsNum / 60);
-          const newHours = hours + Math.floor(newMinutesNum / 60);
+    if (isActiveSt) {
+      intervalId = setInterval(() => {
+        setTimeSt(({ hours, minutes, seconds }) => {
+          const newSeconds = seconds + 1;
+          const newMinutes = minutes + Math.floor(newSeconds / 60);
+          const newHours = hours + Math.floor(newMinutes / 60);
 
-          return { hours: newHours % 24, minutes: newMinutesNum % 60, seconds: newSecondsNum % 60 };
+          return { hours: newHours % 24, minutes: newMinutes % 60, seconds: newSeconds % 60 };
         });
       }, 1000);
     }
 
-    return () => clearInterval(intervalIdNum);
-  }, [isActiveBoolSt]);
+    return () => clearInterval(intervalId);
+  }, [isActiveSt]);
 
   return (
     <div className="h-full flex flex-col items-center justify-center">
-      <TimerDisplay
-        hours={timeObjSt.hours}
-        minutes={timeObjSt.minutes}
-        seconds={timeObjSt.seconds}
-      />
+      <TimerDisplay hours={timeSt.hours} minutes={timeSt.minutes} seconds={timeSt.seconds} />
 
       <TimerControls
-        isActiveBoolSt={isActiveBoolSt}
+        isActiveSt={isActiveSt}
         handleOnStartFn={() => {
-          setIsActiveBoolSt(true);
+          setIsActiveSt(true);
           handleOnStartFn();
         }}
         handleOnPauseFn={() => {
-          setIsActiveBoolSt(false);
+          setIsActiveSt(false);
           handleOnPauseFn();
         }}
-        handleOnResetFn={() => {
-          setIsActiveBoolSt(false);
-          setTimeObjSt(initialTimeObj);
-          handleOnResetFn();
-        }}
         handleOnFinishFn={() => {
-          setIsActiveBoolSt(false);
-          setTimeObjSt(initialTimeObj);
+          setIsActiveSt(false);
+          setTimeSt(initialTime);
           handleOnFinishFn();
+        }}
+        handleOnResetFn={() => {
+          setIsActiveSt(false);
+          setTimeSt(initialTime);
+          handleOnResetFn();
         }}
       />
     </div>

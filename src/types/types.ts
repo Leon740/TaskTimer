@@ -1,4 +1,4 @@
-export interface todoObjI {
+export interface todoI {
   id: number;
   splitId: number;
   priority: number;
@@ -6,9 +6,9 @@ export interface todoObjI {
   completed: boolean;
 }
 
-export interface splitObjI {
+export interface splitI {
   id: number;
   start: string;
   finish?: string;
-  todos: todoObjI[];
+  todos: todoI[];
 }

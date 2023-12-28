@@ -3,23 +3,23 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { icon } from '@fortawesome/fontawesome-svg-core/import.macro';
 
 interface TimerControlsPropsI {
-  isActiveBoolSt: boolean;
-  handleOnResetFn: () => void;
-  handleOnPauseFn: () => void;
+  isActiveSt: boolean;
   handleOnStartFn: () => void;
+  handleOnPauseFn: () => void;
   handleOnFinishFn: () => void;
+  handleOnResetFn: () => void;
 }
 
 function TimerControls({
-  isActiveBoolSt,
-  handleOnResetFn,
-  handleOnPauseFn,
+  isActiveSt,
   handleOnStartFn,
-  handleOnFinishFn
+  handleOnPauseFn,
+  handleOnFinishFn,
+  handleOnResetFn
 }: TimerControlsPropsI): React.JSX.Element {
   return (
     <div className="flex items-center justify-center gap-xl mt-xxl">
-      {isActiveBoolSt && (
+      {isActiveSt && (
         <button
           type="button"
           aria-label="Reset split"
@@ -30,7 +30,7 @@ function TimerControls({
         </button>
       )}
 
-      {isActiveBoolSt ? (
+      {isActiveSt ? (
         <button
           type="button"
           aria-label="Pause timer"
@@ -50,7 +50,7 @@ function TimerControls({
         </button>
       )}
 
-      {isActiveBoolSt && (
+      {isActiveSt && (
         <button
           type="button"
           aria-label="Finish timer"

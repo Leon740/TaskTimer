@@ -10,8 +10,8 @@ interface TimerDisplayPropsI {
 }
 
 function TimerDisplay({ hours, minutes, seconds }: TimerDisplayPropsI): React.JSX.Element {
-  const [splitTimeNumSt, setSplitTimeNumSt] = useState<number>(45);
-  const splitCompletedPercentageNum: number = ((minutes / splitTimeNumSt) * 100) % 100;
+  const [splitTimeSt, setSplitTimeSt] = useState<number>(45);
+  const splitCompletedPercentage: number = ((minutes / splitTimeSt) * 100) % 100;
 
   return (
     <div className="w-256 h-256 flex flex-col justify-center items-center text-center overflow-hidden relative">
@@ -21,10 +21,10 @@ function TimerDisplay({ hours, minutes, seconds }: TimerDisplayPropsI): React.JS
           {hours > 0 && `${hours}:`}
           {minutes}:{seconds}
         </h1>
-        <TimerSelect valueNum={splitTimeNumSt} onChangeFn={setSplitTimeNumSt} />
+        <TimerSelect value={splitTimeSt} onChangeFn={setSplitTimeSt} />
       </div>
 
-      <TimerBorder percentageNum={splitCompletedPercentageNum} />
+      <TimerBorder percentage={splitCompletedPercentage} />
     </div>
   );
 }
