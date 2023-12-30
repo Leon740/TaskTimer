@@ -119,14 +119,14 @@ function Main() {
     setSplitsStorageSt(splitsSt);
   }, [setSplitsStorageSt, splitsSt]);
 
-  function addTodoFn(priorityNum: number, labelStr: string) {
+  function addTodoFn(priority: number, label: string) {
     setTodosSt((prevTodos) => [
       ...prevTodos,
       {
         id: prevTodos.length > 0 ? prevTodos[prevTodos.length - 1].id + 1 : 0,
         splitId: splitsSt.length > 0 ? splitsSt[splitsSt.length - 1].id : 0,
-        priority: priorityNum,
-        label: labelStr,
+        priority,
+        label,
         completed: false
       }
     ]);
@@ -137,6 +137,19 @@ function Main() {
       prevTodos.map((todo) => {
         if (todo.id === id) {
           return { ...todo, completed: !todo.completed };
+        }
+
+        return todo;
+      })
+    );
+  }
+
+  function modifyTodoFn(id: number, priority: number, label: string) {
+    console.log(id);
+    setTodosSt((prevTodos) =>
+      prevTodos.map((todo) => {
+        if (todo.id === id) {
+          return { ...todo, priority, label };
         }
 
         return todo;
@@ -188,6 +201,8 @@ function Main() {
               <SplitsPage
                 backBtnOnClickFn={backBtnOnClickFn}
                 splits={splitsSt?.filter((split) => split.finish)}
+                toggleTodoFn={toggleTodoFn}
+                modifyTodoFn={modifyTodoFn}
               />
             </div>
           </div>
@@ -225,8 +240,9 @@ function Main() {
               <TodosPage
                 backBtnOnClickFn={backBtnOnClickFn}
                 todos={todosSt}
-                toggleTodoFn={toggleTodoFn}
                 addTodoFn={addTodoFn}
+                toggleTodoFn={toggleTodoFn}
+                modifyTodoFn={modifyTodoFn}
               />
             </div>
           </div>

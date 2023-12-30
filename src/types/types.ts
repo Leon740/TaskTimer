@@ -12,3 +12,12 @@ export interface splitI {
   finish?: string;
   todos: todoI[];
 }
+
+export interface priorityI {
+  id: number;
+  number: number;
+  label: string;
+  color: string;
+  border: string;
+  background: string;
+}

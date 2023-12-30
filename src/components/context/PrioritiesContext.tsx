@@ -1,13 +1,5 @@
 import { createContext } from 'react';
-
-interface priorityI {
-  id: number;
-  number: number;
-  label: string;
-  color: string;
-  border: string;
-  background: string;
-}
+import { priorityI } from '../../types/types';
 
 const PrioritiesContext = createContext<priorityI[]>([]);
 

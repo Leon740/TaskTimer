@@ -2,6 +2,7 @@ import React, { useState, useRef, useContext, ChangeEvent } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { icon } from '@fortawesome/fontawesome-svg-core/import.macro';
 import PrioritiesContext from '../context/PrioritiesContext';
+import PrioritiesSelect from './PrioritiesSelect';
 
 interface NewTodoPropsI {
   // eslint-disable-next-line no-unused-vars
@@ -37,6 +38,12 @@ function NewTodo({ addTodoFn }: NewTodoPropsI): React.JSX.Element {
   const [priorityNumberSt, setPriorityNumberSt] = useState<number>(
     PRIORITIES[PRIORITIES.length - 1].number
   );
+
+  function priorityOnChangeFn(priorityNumber: number) {
+    setPriorityNumberSt(priorityNumber);
+    inputOnFocusFn();
+  }
+
   const activePriority = PRIORITIES.find((priority) => priority.number === priorityNumberSt);
 
   function handleAddTodoFn() {
@@ -55,26 +62,12 @@ function NewTodo({ addTodoFn }: NewTodoPropsI): React.JSX.Element {
         <FontAwesomeIcon icon={icon({ name: 'circle-plus' })} />
       </button>
 
-      {/* delay-300 = workaround of prioritiesSelectOnChange */}
-      <ul
-        ref={prioritiesSelectRef}
+      {/* delay-300 = workaround of prioritiesSelectOnChange h-0 issue (can't select) */}
+      <PrioritiesSelect
         className="absolute z-10 left-xxs top-lg flex flex-col gap-xs transition-all delay-300 -translate-y-full overflow-hidden h-0"
-      >
-        {PRIORITIES.map(({ id, number, label, background, border }) => (
-          <li key={id}>
-            <button
-              type="button"
-              value={number}
-              aria-label={label}
-              onClick={() => {
-                setPriorityNumberSt(number);
-                inputOnFocusFn();
-              }}
-              className={`w-sm h-sm rounded-full ${background} ${border}`}
-            />
-          </li>
-        ))}
-      </ul>
+        onChange={priorityOnChangeFn}
+        ref={prioritiesSelectRef}
+      />
 
       <div className="relative w-full flex items-center">
         <input

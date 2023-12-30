@@ -9,16 +9,19 @@ interface TodosPagePropsI {
   backBtnOnClickFn: () => void;
   todos: todoI[];
   // eslint-disable-next-line no-unused-vars
-  toggleTodoFn: (idNum: number) => void;
+  addTodoFn: (priority: number, label: string) => void;
   // eslint-disable-next-line no-unused-vars
-  addTodoFn: (priorityNum: number, labelStr: string) => void;
+  toggleTodoFn: (id: number) => void;
+  // eslint-disable-next-line no-unused-vars
+  modifyTodoFn: (id: number, priority: number, label: string) => void;
 }
 
 function TodosPage({
   backBtnOnClickFn,
   todos,
+  addTodoFn,
   toggleTodoFn,
-  addTodoFn
+  modifyTodoFn
 }: TodosPagePropsI): React.JSX.Element {
   const PRIORITIES = useContext(PrioritiesContext);
 
@@ -28,21 +31,23 @@ function TodosPage({
         <BackBtn onClickFn={backBtnOnClickFn} />
 
         <ul>
-          {PRIORITIES.map(({ id, number, label, color, border }) => {
+          {PRIORITIES.map((priority) => {
             const todosByPriority = todos?.filter(
-              (todo) => !todo.completed && todo.priority === number
+              (todo) => !todo.completed && todo.priority === priority.number
             );
 
             return (
-              <li key={id}>
-                <section className={`p-xs mb-1 border-1 ${border}`}>
-                  <h4 className={`text-sm ${color}`}>{label}</h4>
+              <li key={priority.id}>
+                <section className={`p-xs mb-1 border-1 ${priority.border}`}>
+                  <h4 className={`text-sm ${priority.color}`}>{priority.label}</h4>
                 </section>
                 {todosByPriority.length > 0 && (
                   <TodosList
-                    className="py-lg px-xs"
+                    className="py-sm"
+                    priority={priority}
                     todos={todosByPriority}
                     toggleTodoFn={toggleTodoFn}
+                    modifyTodoFn={modifyTodoFn}
                   />
                 )}
               </li>

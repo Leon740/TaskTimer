@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import TodosList from '../Todos/TodosList';
 import BackBtn from '../common/BackBtn';
 import BlankTitle from './BlankTitle';
 import { splitI } from '../../types/types';
+import PrioritiesContext from '../context/PrioritiesContext';
 
 function getFormattedDateFn(dateArg: number) {
   const date = new Date(dateArg);
@@ -25,10 +26,20 @@ function getTimeFn(ms: number) {
 interface SplitsPagePropsI {
   backBtnOnClickFn: () => void;
   splits: splitI[];
+  // eslint-disable-next-line no-unused-vars
+  toggleTodoFn: (id: number) => void;
+  // eslint-disable-next-line no-unused-vars
+  modifyTodoFn: (id: number, priority: number, label: string) => void;
 }
 
-function SplitsPage({ backBtnOnClickFn, splits }: SplitsPagePropsI): React.JSX.Element {
+function SplitsPage({
+  backBtnOnClickFn,
+  splits,
+  toggleTodoFn,
+  modifyTodoFn
+}: SplitsPagePropsI): React.JSX.Element {
   let totalTimeNum = 0;
+  const PRIORITIES = useContext(PrioritiesContext);
 
   return (
     <>
@@ -51,8 +62,30 @@ function SplitsPage({ backBtnOnClickFn, splits }: SplitsPagePropsI): React.JSX.E
                     </h3>
                     <span className="text-sm ml-lg">{getTimeFn(timeDifferenceNum)}</span>
                   </section>
+
+                  {}
+
                   {todos.length > 0 ? (
-                    <TodosList todos={todos.sort((a, b) => a.priority - b.priority)} />
+                    PRIORITIES.map(
+                      (priority) => {
+                        const todosByPriority = todos?.filter(
+                          (todo) => todo.completed && todo.priority === priority.number
+                        );
+
+                        return (
+                          todosByPriority.length > 0 && (
+                            <TodosList
+                              key={priority.id}
+                              priority={priority}
+                              todos={todosByPriority}
+                              toggleTodoFn={toggleTodoFn}
+                              modifyTodoFn={modifyTodoFn}
+                            />
+                          )
+                        );
+                      }
+                      // <TodosList todos={todos.sort((a, b) => a.priority - b.priority)} />
+                    )
                   ) : (
                     <h4 className="text-sm text-red-500">No Todos completed.</h4>
                   )}
