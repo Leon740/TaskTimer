@@ -47,7 +47,7 @@ function SplitsPage({
         <BackBtn onClickFn={backBtnOnClickFn} />
 
         {splits?.length > 0 ? (
-          <ul className="w-full flex flex-col gap-xxl">
+          <ul className="w-full flex flex-col gap-xl">
             {splits.map(({ id, start: startStr, finish: finishStr, todos }) => {
               const startNum = new Date(startStr).getTime();
               const finishNum = new Date(finishStr!).getTime();
@@ -56,7 +56,7 @@ function SplitsPage({
 
               return (
                 <li key={id}>
-                  <section className="flex items-baseline justify-between sm:justify-start mb-lg">
+                  <section className="flex items-baseline justify-between sm:justify-start mb-sm">
                     <h3 className="text-md lowercase">
                       {getFormattedDateFn(startNum)} - {getFormattedDateFn(finishNum)}
                     </h3>

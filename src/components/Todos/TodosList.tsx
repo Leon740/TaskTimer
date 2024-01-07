@@ -78,9 +78,9 @@ function TodoItem({
         isTodosPage
           ? isCompletedSt
             ? 'py-0 h-0'
-            : 'py-sm h-xxl'
+            : 'py-xs h-xl'
           : isCompletedSt
-          ? 'py-sm h-xxl'
+          ? 'py-xs h-xl'
           : 'py-0 h-0'
       }`}
     >
@@ -132,7 +132,6 @@ function TodoItem({
 }
 
 interface TodosListPropsI {
-  className?: string;
   priority: priorityI;
   todos: todoI[];
   // eslint-disable-next-line no-unused-vars
@@ -143,7 +142,6 @@ interface TodosListPropsI {
 }
 
 function TodosList({
-  className = '',
   priority,
   todos,
   toggleTodoFn = () => {},
@@ -152,7 +150,7 @@ function TodosList({
 }: TodosListPropsI): React.JSX.Element {
   return (
     // transition-all = to show the hiding TodoList animation
-    <ul className={`flex flex-col transition-all ${className}`}>
+    <ul className="flex flex-col transition-all">
       {todos.map((todo) => (
         <TodoItem
           key={todo.id}

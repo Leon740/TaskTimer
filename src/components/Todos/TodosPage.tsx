@@ -43,7 +43,6 @@ function TodosPage({
                 </section>
                 {todosByPriority.length > 0 && (
                   <TodosList
-                    className="py-sm"
                     priority={priority}
                     todos={todosByPriority}
                     toggleTodoFn={toggleTodoFn}
