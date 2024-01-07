@@ -38,7 +38,8 @@ const PRIORITIES = [
     label: 'Imp Urg',
     color: 'text-red-500',
     border: 'border-red-500',
-    background: 'bg-red-500'
+    background: 'bg-red-500',
+    hover: 'hover:bg-red-500'
   },
   {
     id: 1,
@@ -46,7 +47,8 @@ const PRIORITIES = [
     label: '!Imp Urg',
     color: 'text-yellow-500',
     border: 'border-yellow-500',
-    background: 'bg-yellow-500'
+    background: 'bg-yellow-500',
+    hover: 'hover:bg-yellow-500'
   },
   {
     id: 2,
@@ -54,7 +56,8 @@ const PRIORITIES = [
     label: 'Imp !Urg',
     color: 'text-blue-500',
     border: 'border-blue-500',
-    background: 'bg-blue-500'
+    background: 'bg-blue-500',
+    hover: 'hover:bg-blue-500'
   },
   {
     id: 3,
@@ -62,7 +65,8 @@ const PRIORITIES = [
     label: '!Imp !Urg',
     color: 'text-white',
     border: 'border-white',
-    background: 'bg-white'
+    background: 'bg-white',
+    hover: 'hover:bg-white'
   }
 ];
 
@@ -99,8 +103,10 @@ function Main() {
   const [todosStorageSt, setTodosStorageSt] = useLocalStorageFn(
     'todosStorageSt',
     [],
+    // 1 day
+    24 * 60 * 60 * 1000
     // 1 week
-    7 * 24 * 60 * 60 * 1000
+    // 7 * 24 * 60 * 60 * 1000
   );
   const [todosSt, setTodosSt] = useState<todoI[]>(todosStorageSt);
   useEffect(() => {
@@ -133,38 +139,97 @@ function Main() {
   }
 
   function toggleTodoFn(id: number) {
+    let splitId: number;
+
     setTodosSt((prevTodos) =>
       prevTodos.map((todo) => {
         if (todo.id === id) {
+          splitId = todo.splitId;
+
           return { ...todo, completed: !todo.completed };
         }
 
         return todo;
       })
     );
+
+    setSplitsSt((prevSplits) =>
+      prevSplits.map((split) => {
+        if (split.id === splitId) {
+          return {
+            ...split,
+            // todos: split.todos.filter((todo) => todo.id !== id)
+            todos: split.todos.map((todo) => {
+              if (todo.id === id) {
+                return { ...todo, completed: !todo.completed };
+              }
+
+              return todo;
+            })
+          };
+        }
+
+        return split;
+      })
+    );
   }
 
   function modifyTodoFn(id: number, priority: number, label: string) {
-    console.log(id);
+    let splitId: number;
+
     setTodosSt((prevTodos) =>
       prevTodos.map((todo) => {
         if (todo.id === id) {
+          splitId = todo.splitId;
+
           return { ...todo, priority, label };
         }
 
         return todo;
       })
     );
+
+    setSplitsSt((prevSplits) =>
+      prevSplits.map((split) => {
+        if (split.id === splitId) {
+          return {
+            ...split,
+            todos: split.todos.map((todo) => {
+              if (todo.id === id) {
+                return { ...todo, priority, label };
+              }
+
+              return todo;
+            })
+          };
+        }
+
+        return split;
+      })
+    );
   }
 
   // timer actions
   function splitOnStartFn() {
+    setTodosSt((prevTodos) =>
+      prevTodos.map((todo) => {
+        if (!todo.completed) {
+          return {
+            ...todo,
+            splitId: splitsSt.length > 0 ? splitsSt[splitsSt.length - 1].id + 1 : 0
+          };
+        }
+
+        return todo;
+      })
+    );
+
     setSplitsSt((prevSplits) => [
       ...prevSplits,
       {
         id: prevSplits.length > 0 ? prevSplits[prevSplits.length - 1].id + 1 : 0,
         start: String(new Date()),
-        todos: todosSt
+        todos: todosSt.filter((todo) => !todo.completed)
       }
     ]);
   }
@@ -179,13 +244,16 @@ function Main() {
   function splitOnFinishFn() {
     setSplitsSt((prevSplits) =>
       prevSplits.map((split) => {
-        if (split.finish) {
-          return split;
+        if (!split.finish) {
+          return {
+            ...split,
+            finish: String(new Date()),
+            todos: todosSt.filter((todo) => todo.splitId === split.id && todo.completed)
+          };
         }
 
         return {
           ...split,
-          finish: String(new Date()),
           todos: todosSt.filter((todo) => todo.splitId === split.id && todo.completed)
         };
       })

@@ -1,4 +1,4 @@
-import React, { forwardRef, useContext } from 'react';
+import React, { ForwardRefExoticComponent, RefAttributes, forwardRef, useContext } from 'react';
 import PrioritiesContext from '../context/PrioritiesContext';
 
 interface PrioritiesSelectPropsI {
@@ -7,13 +7,14 @@ interface PrioritiesSelectPropsI {
   onChange: (priorityNumber: number) => void;
 }
 
-const PrioritiesSelect = forwardRef(
+const PrioritiesSelect: ForwardRefExoticComponent<
+  PrioritiesSelectPropsI & RefAttributes<HTMLUListElement>
+> = forwardRef<HTMLUListElement, PrioritiesSelectPropsI>(
   ({ className = '', onChange = () => {} }: PrioritiesSelectPropsI, ref) => {
     const PRIORITIES = useContext(PrioritiesContext);
+    PrioritiesSelect.displayName = 'PrioritiesSelect';
 
     return (
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       <ul className={className} ref={ref}>
         {PRIORITIES.map((priority) => (
           <li key={priority.id}>
@@ -23,7 +24,7 @@ const PrioritiesSelect = forwardRef(
               aria-label={priority.label}
               title={priority.label}
               onClick={() => onChange(priority.number)}
-              className={`w-sm h-sm rounded-full ${priority.background} ${priority.border}`}
+              className={`w-sm h-sm rounded-full transition-all hover:scale-110 ${priority.background} ${priority.border}`}
             />
           </li>
         ))}

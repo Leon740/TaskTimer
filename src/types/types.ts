@@ -20,4 +20,5 @@ export interface priorityI {
   color: string;
   border: string;
   background: string;
+  hover: string;
 }

@@ -63,19 +63,18 @@ function SplitsPage({
                     <span className="text-sm ml-lg">{getTimeFn(timeDifferenceNum)}</span>
                   </section>
 
-                  {}
-
-                  {todos.length > 0 ? (
+                  {/* when toggling not completed todos appear in the split, this condition checks it */}
+                  {todos.filter((todo) => todo.completed).length > 0 ? (
                     PRIORITIES.map(
                       (priority) => {
                         const todosByPriority = todos?.filter(
-                          (todo) => todo.completed && todo.priority === priority.number
+                          (todo) => todo.priority === priority.number
                         );
 
                         return (
                           todosByPriority.length > 0 && (
                             <TodosList
-                              key={priority.id}
+                              key={`${id}${priority.id}`}
                               priority={priority}
                               todos={todosByPriority}
                               toggleTodoFn={toggleTodoFn}

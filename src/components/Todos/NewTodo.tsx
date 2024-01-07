@@ -64,7 +64,7 @@ function NewTodo({ addTodoFn }: NewTodoPropsI): React.JSX.Element {
 
       {/* delay-300 = workaround of prioritiesSelectOnChange h-0 issue (can't select) */}
       <PrioritiesSelect
-        className="absolute z-10 left-xxs top-lg flex flex-col gap-xs transition-all delay-300 -translate-y-full overflow-hidden h-0"
+        className="absolute z-10 left-0 top-lg w-md flex flex-col items-center gap-xs transition-all delay-300 -translate-y-full overflow-hidden h-0"
         onChange={priorityOnChangeFn}
         ref={prioritiesSelectRef}
       />
@@ -72,6 +72,8 @@ function NewTodo({ addTodoFn }: NewTodoPropsI): React.JSX.Element {
       <div className="relative w-full flex items-center">
         <input
           type="text"
+          name="newTodo"
+          id="newTodo"
           ref={inputRef}
           value={inputValueSt}
           onChange={inputOnChangeFn}

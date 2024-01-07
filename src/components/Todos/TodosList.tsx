@@ -40,10 +40,10 @@ function TodoItem({
   }
 
   // toggling
-  const [isToggledSt, setIsToggledSt] = useState(isTodosPage && completed);
+  const [isCompletedSt, setIsCompletedSt] = useState(completed);
 
   function onToggleFn(): void {
-    setIsToggledSt((prev) => !prev);
+    setIsCompletedSt((prev) => !prev);
 
     // timeout delay = to show the hiding TodoItem animation
     setTimeout(() => {
@@ -71,11 +71,20 @@ function TodoItem({
   return (
     <li
       // delay-300 = to show the line moving of TodoItem
-      className={`w-full flex items-center justify-between text-md overflow-hidden transition-all delay-300  ${
-        isToggledSt ? 'py-0 h-0' : 'py-sm h-xxl'
+      // className="w-full flex items-center justify-between text-md overflow-hidden transition-all delay-300"
+      className={`w-full flex items-center justify-between text-md overflow-hidden transition-all delay-300 
+      ${
+        // eslint-disable-next-line no-nested-ternary
+        isTodosPage
+          ? isCompletedSt
+            ? 'py-0 h-0'
+            : 'py-sm h-xxl'
+          : isCompletedSt
+          ? 'py-sm h-xxl'
+          : 'py-0 h-0'
       }`}
     >
-      <div className="flex items-center">
+      <div className="w-full flex items-center pr-lg">
         <button
           type="button"
           onClick={onToggleFn}
@@ -83,18 +92,22 @@ function TodoItem({
           title="Toggle Todo"
           className={`w-sm h-sm mr-sm shrink-0 border-1 rounded-full transition-all ${
             priority!.border
-          } ${isToggledSt ? priority!.background : ''}`}
+          } ${isTodosPage ? priority!.hover : 'hover:bg-transparent'} ${
+            isCompletedSt ? priority!.background : ''
+          }`}
         />
 
-        <div className="w-full relative overflow-hidden">
+        <div className="relative overflow-hidden">
           <span
             className={`w-full h-x absolute translate-y-1/2 top-1/2 left-0 transition-all ${
               priority!.background
-            } ${isToggledSt ? 'translate-x-0' : '-translate-x-full'}`}
+            } ${isTodosPage && isCompletedSt ? 'translate-x-0' : '-translate-x-full'}`}
           />
 
           <input
             type="text"
+            name={`name${id}`}
+            id={`id${id}`}
             value={inputValueSt}
             onChange={(event) => inputOnChangeFn(event.target.value)}
             onFocus={onFocusFn}
@@ -102,13 +115,15 @@ function TodoItem({
             title="Edit Todo"
             // size = workaround for input width to fit content
             size={inputValueSt.length}
-            className={`bg-transparent ${priority!.color}`}
+            className={`w-full bg-transparent px-xxs rounded-xxs transition-all hover:bg-slate-800 focus:bg-slate-800 ${
+              priority!.color
+            }`}
           />
         </div>
       </div>
 
       <PrioritiesSelect
-        className="shrink-0 flex gap-xs ml-lg transition-all delay-300 translate-x-full"
+        className="shrink-0 flex gap-xs transition-all delay-300 translate-x-full"
         onChange={priorityOnChangeFn}
         ref={prioritiesSelectRef}
       />

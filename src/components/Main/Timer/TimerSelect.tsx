@@ -11,6 +11,8 @@ function TimerSelect({ value, onChangeFn }: TimerSelectPropsI): React.JSX.Elemen
   return (
     <div className="relative">
       <select
+        name="timer"
+        id="timer"
         className="appearance-none relative z-10 bg-transparent border-1 border-white py-xxs pl-xs pr-lg"
         value={value}
         onChange={(event) => onChangeFn(Number(event.target.value))}

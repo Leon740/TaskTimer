@@ -48,6 +48,7 @@ function TodosPage({
                     todos={todosByPriority}
                     toggleTodoFn={toggleTodoFn}
                     modifyTodoFn={modifyTodoFn}
+                    isTodosPage
                   />
                 )}
               </li>
