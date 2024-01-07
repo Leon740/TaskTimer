@@ -7,7 +7,7 @@ import './App.scss';
 function App() {
   return (
     <React.StrictMode>
-      <div className="min-h-screen flex bg-neutral-900 text-white">
+      <div className="min-h-svh flex bg-neutral-900 text-white">
         <ErrorBoundary>
           <Loader>
             <Main />

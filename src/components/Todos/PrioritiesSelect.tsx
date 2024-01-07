@@ -10,6 +10,7 @@ interface PrioritiesSelectPropsI {
 const PrioritiesSelect: ForwardRefExoticComponent<
   PrioritiesSelectPropsI & RefAttributes<HTMLUListElement>
 > = forwardRef<HTMLUListElement, PrioritiesSelectPropsI>(
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   ({ className = '', onChange = () => {} }: PrioritiesSelectPropsI, ref) => {
     const PRIORITIES = useContext(PrioritiesContext);
     PrioritiesSelect.displayName = 'PrioritiesSelect';

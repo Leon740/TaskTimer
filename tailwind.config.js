@@ -55,6 +55,9 @@ module.exports = {
       0: 0,
       1: '1px'
     },
+    minHeight: {
+      svh: '100svh'
+    },
     maxHeight: {
       0: 0
     },
